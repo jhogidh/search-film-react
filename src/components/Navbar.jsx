@@ -45,11 +45,9 @@ const Search = styled("div")(({ theme }) => ({
     backgroundColor: alpha(theme.palette.background.default, 0.2),
     borderColor: theme.palette.primary.main,
   },
-  marginRight: theme.spacing(1), // Diberi sedikit jarak dari tombol tema
-  marginLeft: 0,
+  // DIUBAH: Dihapus marginRight dan marginLeft untuk diatur oleh Stack
   width: "100%",
   [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
     width: "auto",
   },
 }));
@@ -118,7 +116,7 @@ function Navbar() {
         <Stack direction="row" spacing={1} alignItems="center">
           <MovieFilter />
           <Typography variant="h6" noWrap>
-            MovieDB
+            CariFilm
           </Typography>
         </Stack>
       </Toolbar>
@@ -167,7 +165,7 @@ function Navbar() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: "none" } }}
+            sx={{ mr: { xs: 1, sm: 2 }, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -188,19 +186,20 @@ function Navbar() {
           >
             <MovieFilter sx={{ fontSize: 30 }} />
             <Typography variant="h6" noWrap>
-              MovieDB
+              CariFilm
             </Typography>
           </Stack>
 
+          {/* Judul di Mobile */}
           <Typography
             variant="h6"
-            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            noWrap
+            sx={{ display: { xs: "flex", md: "none" } }}
           >
-            {navItems.find((item) => item.path === location.pathname)?.text ||
-              "MovieDB"}
+            CariFilm
           </Typography>
 
-          {/* DIUBAH: Menggunakan positioning absolut untuk memastikan menu di tengah */}
+          {/* Menu Navigasi di Desktop */}
           <Box
             sx={{
               position: "absolute",
@@ -247,36 +246,36 @@ function Navbar() {
             ))}
           </Box>
 
-          {/* Spacer untuk mendorong elemen ke kanan */}
+          {/* Spacer dan Kontrol Kanan */}
           <Box sx={{ flexGrow: 1 }} />
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Cari film..."
+                inputProps={{ "aria-label": "search" }}
+                onKeyDown={(e) => {
+                  const query = e.target.value.trim();
+                  if (e.key === "Enter" && query) {
+                    navigate(`search/${query}`);
+                  }
+                }}
+              />
+            </Search>
 
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-              onKeyDown={(e) => {
-                const query = e.target.value.trim();
-                if (e.key === "Enter" && query) {
-                  navigate(`search/${query}`);
-                }
+            <IconButton
+              sx={{
+                transition: "transform 0.4s ease-in-out",
+                "&:hover": { transform: "rotate(90deg)" },
               }}
-            />
-          </Search>
-
-          <IconButton
-            sx={{
-              ml: 1,
-              transition: "transform 0.4s ease-in-out",
-              "&:hover": { transform: "rotate(90deg)" },
-            }}
-            onClick={toggleTheme}
-            color="inherit"
-          >
-            {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
+              onClick={toggleTheme}
+              color="inherit"
+            >
+              {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Stack>
         </Toolbar>
       </AppBar>
 

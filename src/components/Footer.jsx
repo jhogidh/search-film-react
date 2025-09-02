@@ -26,7 +26,7 @@ function Footer() {
         >
           <MovieFilter color="primary" />
           <Typography variant="h6" color="primary">
-            MovieDB
+            CariFilm
           </Typography>
         </Box>
         <Typography
@@ -36,8 +36,8 @@ function Footer() {
           sx={{ mt: 1 }}
         >
           {"Copyright © "}
-          <Link color="inherit" href="https://mui.com/">
-            Your Website
+          <Link color="inherit" href="https://www.instagram.com/jo.gidion/">
+            Jo.Gidion
           </Link>{" "}
           {new Date().getFullYear()}
           {"."}

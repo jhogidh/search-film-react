@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import Star from "@mui/icons-material/Star";
 import { useParams, useLocation, Link } from "react-router-dom";
 
-// DITAMBAHKAN: Keyframes untuk animasi CSS
 const fadeInUpAnimation = `
   @keyframes fadeInUp {
     from {
@@ -134,7 +133,6 @@ function Movies() {
     <Box>
       <style>{fadeInUpAnimation}</style>
 
-      {/* DIUBAH: Banner Halaman yang Lebih Stylish */}
       <Box
         sx={{
           py: { xs: 4, md: 8 },
@@ -148,10 +146,21 @@ function Movies() {
           textShadow: "2px 2px 8px rgba(0,0,0,0.6)",
         }}
       >
-        <Typography variant="h2" component="h1" fontWeight="bold">
+        {/* DIUBAH: Ukuran font judul dibuat responsif */}
+        <Typography
+          component="h1"
+          fontWeight="bold"
+          sx={{
+            fontSize: { xs: "2.2rem", sm: "3rem", md: "3.75rem" },
+            lineHeight: 1.2,
+          }}
+        >
           {getPageTitle()}
         </Typography>
-        <Typography sx={{ opacity: 0.7, mt: 1 }}>
+        {/* DIUBAH: Ukuran font subjudul juga dibuat responsif */}
+        <Typography
+          sx={{ opacity: 0.7, mt: 1, fontSize: { xs: "0.9rem", sm: "1rem" } }}
+        >
           Jelajahi koleksi terbaik pilihan kami
         </Typography>
       </Box>
