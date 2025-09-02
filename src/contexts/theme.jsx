@@ -1,10 +1,9 @@
 import { createTheme, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { createContext, useMemo, useState } from "react";
+import { createContext, useMemo, useState, useContext } from "react"; // DIUBAH: Menambahkan 'useContext'
 
-export const ThemeContext = createContext({
-  toggleTheme: () => {},
-});
+// DIUBAH: Context diubah untuk bisa menampung 'mode' dan 'toggleTheme'
+export const ThemeContext = createContext();
 
 export const AppThemeProvider = ({ children }) => {
   const [mode, setMode] = useState("light");
@@ -33,6 +32,9 @@ export const AppThemeProvider = ({ children }) => {
                 },
               }),
         },
+        typography: {
+          fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
+        },
       }),
     [mode]
   );
@@ -41,12 +43,20 @@ export const AppThemeProvider = ({ children }) => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
 
+  // DIUBAH: 'mode' ditambahkan ke dalam value provider
+  const value = { mode, toggleTheme };
+
   return (
-    <ThemeContext.Provider value={{ toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}
       </ThemeProvider>
     </ThemeContext.Provider>
   );
+};
+
+// DITAMBAHKAN: Custom hook 'useAppTheme' dibuat dan diekspor
+export const useAppTheme = () => {
+  return useContext(ThemeContext);
 };
