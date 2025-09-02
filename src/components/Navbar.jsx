@@ -15,6 +15,8 @@ import {
   ListItemText,
   Stack,
   alpha,
+  Modal,
+  Fade,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState, useEffect } from "react";
@@ -26,11 +28,11 @@ import styled from "@emotion/styled";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   EmojiEvents,
-  HomeFilled,
   MovieFilter,
   Whatshot,
   Theaters,
 } from "@mui/icons-material";
+import logoUrl from "/logo.svg";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -38,18 +40,13 @@ const Search = styled("div")(({ theme }) => ({
   backgroundColor: alpha(theme.palette.text.primary, 0.05),
   transition: "all 0.3s ease-in-out",
   border: "1px solid transparent",
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.text.primary, 0.1),
-  },
+  "&:hover": { backgroundColor: alpha(theme.palette.text.primary, 0.1) },
   "&:focus-within": {
     backgroundColor: alpha(theme.palette.background.default, 0.2),
     borderColor: theme.palette.primary.main,
   },
-  // DIUBAH: Dihapus marginRight dan marginLeft untuk diatur oleh Stack
   width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    width: "auto",
-  },
+  [theme.breakpoints.up("sm")]: { width: "auto" },
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -72,15 +69,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     width: "100%",
     [theme.breakpoints.up("md")]: {
       width: "20ch",
-      "&:focus": {
-        width: "25ch",
-      },
+      "&:focus": { width: "25ch" },
     },
   },
 }));
 
 const navItems = [
-  { text: "Home", path: "/", icon: <HomeFilled /> },
+  { text: "Home", path: "/", icon: <Theaters /> },
   { text: "Now Playing", path: "/now-playing", icon: <Theaters /> },
   { text: "Popular", path: "/popular", icon: <Whatshot /> },
   { text: "Top Rated", path: "/top-rated", icon: <EmojiEvents /> },
@@ -91,20 +86,17 @@ function Navbar() {
   const { mode, toggleTheme } = useAppTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [navBackground, setNavBackground] = useState("transparent");
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleDrawerToggle = () => {
-    setMobileOpen((prevState) => !prevState);
-  };
+  const handleDrawerToggle = () => setMobileOpen((prevState) => !prevState);
+  const handleSearchOpen = () => setSearchOpen(true);
+  const handleSearchClose = () => setSearchOpen(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setNavBackground("glass");
-      } else {
-        setNavBackground("transparent");
-      }
+      setNavBackground(window.scrollY > 10 ? "glass" : "transparent");
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -114,7 +106,12 @@ function Navbar() {
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
       <Toolbar>
         <Stack direction="row" spacing={1} alignItems="center">
-          <MovieFilter />
+          <Box
+            component="img"
+            src={logoUrl}
+            alt="CariFilm Logo"
+            sx={{ width: 24, height: 24 }}
+          />
           <Typography variant="h6" noWrap>
             CariFilm
           </Typography>
@@ -139,7 +136,7 @@ function Navbar() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <>
       <AppBar
         component="nav"
         position="fixed"
@@ -165,7 +162,7 @@ function Navbar() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: { xs: 1, sm: 2 }, display: { md: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -177,29 +174,27 @@ function Navbar() {
             component={Link}
             to="/"
             sx={{
-              display: { xs: "none", md: "flex" },
               textDecoration: "none",
               color: "inherit",
               transition: "transform 0.3s ease",
               "&:hover": { transform: "scale(1.05)" },
             }}
           >
-            <MovieFilter sx={{ fontSize: 30 }} />
+            <Box
+              component="img"
+              src={logoUrl}
+              alt="CariFilm Logo"
+              sx={{
+                display: { xs: "none", md: "block" },
+                width: 30,
+                height: 30,
+              }}
+            />
             <Typography variant="h6" noWrap>
               CariFilm
             </Typography>
           </Stack>
 
-          {/* Judul di Mobile */}
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{ display: { xs: "flex", md: "none" } }}
-          >
-            CariFilm
-          </Typography>
-
-          {/* Menu Navigasi di Desktop */}
           <Box
             sx={{
               position: "absolute",
@@ -246,24 +241,34 @@ function Navbar() {
             ))}
           </Box>
 
-          {/* Spacer dan Kontrol Kanan */}
           <Box sx={{ flexGrow: 1 }} />
+
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Cari film..."
-                inputProps={{ "aria-label": "search" }}
-                onKeyDown={(e) => {
-                  const query = e.target.value.trim();
-                  if (e.key === "Enter" && query) {
-                    navigate(`search/${query}`);
-                  }
-                }}
-              />
-            </Search>
+            <Box sx={{ display: { xs: "none", md: "block" } }}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Cari film..."
+                  inputProps={{ "aria-label": "search" }}
+                  onKeyDown={(e) => {
+                    const query = e.target.value.trim();
+                    if (e.key === "Enter" && query) {
+                      navigate(`search/${query}`);
+                    }
+                  }}
+                />
+              </Search>
+            </Box>
+
+            <IconButton
+              color="inherit"
+              onClick={handleSearchOpen}
+              sx={{ display: { xs: "flex", md: "none" } }}
+            >
+              <SearchIcon />
+            </IconButton>
 
             <IconButton
               sx={{
@@ -293,7 +298,40 @@ function Navbar() {
           {DrawerList}
         </Drawer>
       </nav>
-    </Box>
+
+      <Modal open={searchOpen} onClose={handleSearchClose} closeAfterTransition>
+        <Fade in={searchOpen}>
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: "background.paper",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+            }}
+          >
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Cari film..."
+                inputProps={{ "aria-label": "search" }}
+                autoFocus
+                onKeyDown={(e) => {
+                  const query = e.target.value.trim();
+                  if (e.key === "Enter" && query) {
+                    navigate(`search/${query}`);
+                    handleSearchClose();
+                  }
+                }}
+              />
+            </Search>
+          </Box>
+        </Fade>
+      </Modal>
+    </>
   );
 }
 
